@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор блинов</title>
+    <style>
+        /* Теплые, «кулинарные» тона */
+        :root {
+            --bg-color: #FAF6EE;       /* Нежный кремовый */
+            --card-color: #FFFFFF;     /* Белый для контраста */
+            --primary-color: #D9A05B;  /* Золотистая корочка блина */
+            --text-color: #4A3E3D;     /* Глубокий кофейно-коричневый */
+            --accent-color: #8C4F2B;   /* Карамельный акцент */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-color);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(140, 79, 43, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--accent-color);
+        }
+
+        h1 { margin-top: 0; font-size: 2.5rem; }
+        h2 { border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; margin-top: 30px; }
+
+        /* Оформление формы */
+        .calculator-form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .calculator-form label {
+            font-weight: bold;
+            align-self: center;
+        }
+
+        .calculator-form input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .calculator-form button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .calculator-form button:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Список ингредиентов */
+        .ingredients-list {
+            list-style: none;
+            padding: 0;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .ingredients-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #EEE;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ingredients-list li:last-child { border-bottom: none; }
+        .ing-name { font-weight: 500; }
+        .ing-amount { color: var(--accent-color); font-weight: bold; }
+
+        /* Карточки шагов приготовления */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step-card {
+            background: var(--bg-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 4px 12px 12px 4px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step-text {
+            flex: 1;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🥞 Калькулятор блинов</h1>
+    
+    <!-- Форма ввода порций -->
+    <form class="calculator-form" method="POST">
+        <label for="portions">Хочу приготовить:</label>
+        <input type="number" id="portions" name="portions" value="{{ portions }}" min="1" required>
+        <label for="portions">блинов</label>
+        <button type="submit">Рассчитать</button>
+    </form>
+
+    <p style="text-align: center; font-style: italic; color: #777;">
+        Показан расчет на <strong>{{ portions }}</strong> бл. (Базовый рецепт: {{ base_portions }} шт.)
+    </p>
+
+    <!-- Вывод ингредиентов через Jinja2 -->
+    <h2>Ингредиенты</h2>
+    <ul class="ingredients-list">
+        {% for name, info in ingredients.items() %}
+        <li>
+            <span class="ing-name">{{ name }}</span>
+            <span class="ing-amount">{{ info.amount }} {{ info.unit }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Вывод шагов карточками через Jinja2 -->
+    <h2>Способ приготовления</h2>
+    <div class="steps-container">
+        {% for step in steps %}
+        <div class="step-card">
+            <div class="step-number">{{ loop.index }}</div>
+            <p class="step-text">{{ step }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
